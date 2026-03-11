@@ -1,0 +1,16 @@
+@use "./styles/button.scss";
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html,
+body,
+#root
+{
+    height: 100%;
+    width: 100%;
+    background-color: #161616;
+    color: whitesmoke;
+    font-family: 'Poppins', sans-serif;
+}

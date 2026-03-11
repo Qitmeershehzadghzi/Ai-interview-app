@@ -1,0 +1,19 @@
+.button {
+  padding: 0.7rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+.primary-button {
+  background-color: #4a90e2;
+  color: white;
+  transition: 0.3s;
+transition: all 0.3s ease-in-out;
+  &:hover {
+    background-color: #357abd;
+  }
+  &:hover{
+    transform: scale(1.1);
+  }
+}
