@@ -1,0 +1,349 @@
+// ── Variables ────────────────────────────────────────────────────────────────
+:root {
+  --bg-page: #0a0c10;
+  --bg-card: #111317;
+  --bg-panel: #1a1d24;
+  --bg-input: #1e222a;
+  --bg-input-hover: #252b36;
+  --border-color: #2a3140;
+  --border-focus: #ff2d78;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b8c5;
+  --text-muted: #6e7a8a;
+  --accent: #ff2d78;
+  --accent-light: #ff6b9d;
+  --accent-gradient: linear-gradient(135deg, #ff2d78, #ff6b9d);
+  --success: #2ea043;
+  --warning: #f0883e;
+  --danger: #f85149;
+}
+
+// ── Mixins ───────────────────────────────────────────────────────────────────
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin smooth-transition($property: all) {
+  transition: $property 0.2s ease;
+}
+
+// ── Keyframes ────────────────────────────────────────────────────────────────
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+// ── Base Styles ──────────────────────────────────────────────────────────────
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+// ── Loading Screen ───────────────────────────────────────────────────────────
+.loading-screen {
+  @include flex-center;
+  min-height: 100vh;
+  background: var(--bg-page);
+  
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    animation: pulse 1.5s infinite;
+  }
+}
+
+// ── Page Shell ───────────────────────────────────────────────────────────────
+.home-page {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1.5rem;
+  gap: 2rem;
+}
+
+// ── Page Header ──────────────────────────────────────────────────────────────
+.page-header {
+  text-align: center;
+  animation: fadeIn 0.5s;
+  
+  h1 {
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    
+    .highlight {
+      color: var(--accent);
+    }
+  }
+  
+  p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+}
+
+// ── Main Card ─────────────────────────────────────────────────────────────────
+.interview-card {
+  width: 100%;
+  max-width: 1000px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  overflow: hidden;
+  
+  &__body {
+    display: flex;
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+  }
+  
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.2);
+  }
+}
+
+// ── Panel Divider ────────────────────────────────────────────────────────────
+.panel-divider {
+  width: 1px;
+  background: var(--border-color);
+  
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 1px;
+  }
+}
+
+// ── Panels ────────────────────────────────────────────────────────────────────
+.panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  
+  h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+  
+  &__textarea {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 0.875rem 1rem;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.95rem;
+    resize: vertical;
+    outline: none;
+    @include smooth-transition;
+    
+    &:hover {
+      background: var(--bg-input-hover);
+    }
+    
+    &:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 2px rgba(255, 45, 120, 0.2);
+    }
+    
+    &::placeholder {
+      color: var(--text-muted);
+    }
+    
+    &--short {
+      min-height: 100px;
+    }
+  }
+}
+
+// ── Upload Section ───────────────────────────────────────────────────────────
+.upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  
+  label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  
+  input[type="file"] {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--bg-input);
+    border: 1px dashed var(--border-color);
+    border-radius: 0.5rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    @include smooth-transition;
+    
+    &::-webkit-file-upload-button {
+      background: var(--accent);
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.25rem;
+      margin-right: 1rem;
+      cursor: pointer;
+      @include smooth-transition;
+      
+      &:hover {
+        background: var(--accent-light);
+      }
+    }
+    
+    &:hover {
+      border-color: var(--accent);
+      background: var(--bg-input-hover);
+    }
+  }
+}
+
+// ── Self Description ─────────────────────────────────────────────────────────
+.self-description {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  
+  label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+}
+
+// ── Generate Button ───────────────────────────────────────────────────────────
+.generate-btn {
+  padding: 0.875rem 2rem;
+  background: var(--accent-gradient);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  @include smooth-transition;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -10px var(--accent);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// ── Recent Reports ────────────────────────────────────────────────────────────
+.recent-reports {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 1000px;
+  animation: fadeIn 0.5s 0.1s both;
+  
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  
+  .reports-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    list-style: none;
+  }
+  
+  .report-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    cursor: pointer;
+    @include smooth-transition;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    
+    &:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 24px -12px black;
+    }
+    
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+    
+    p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      
+      &:last-of-type {
+        color: var(--accent);
+        font-weight: 600;
+        margin-top: 0.25rem;
+      }
+    }
+  }
+}
+
+// ── Responsive Tweaks ─────────────────────────────────────────────────────────
+@media (max-width: 640px) {
+  .home-page {
+    padding: 1rem;
+  }
+  
+  .interview-card__footer {
+    justify-content: center;
+  }
+  
+  .generate-btn {
+    width: 100%;
+  }
+  
+  .reports-list {
+    grid-template-columns: 1fr;
+  }
+}

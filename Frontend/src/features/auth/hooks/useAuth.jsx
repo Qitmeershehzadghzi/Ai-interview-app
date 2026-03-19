@@ -45,13 +45,20 @@ catch(err){
 }finally{
 setLoading(false)
 }}
-useEffect(()=>{
-    const fetchUser =async ()=>{
-        const data =await getMe()
-        setUser(data.user)
-        setLoading(false)
+useEffect(() => {
+
+  const fetchUser = async () => {
+    try {
+      const data = await getMe();
+      setUser(data.user);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-    fetchUser()
+  };
+
+  fetchUser();
 },[])
 return{handleLogin,handleRegister,handleLogout,user,loading}
 }

@@ -22,7 +22,7 @@ import mongoose from "mongoose";
  */
 
 const technicalQuestions =mongoose.Schema({
-    quesion:{
+    question:{
         type:String,
         required:[
             true,"Technical questions is required"
@@ -45,7 +45,7 @@ const technicalQuestions =mongoose.Schema({
     _id:false
 })
 const behavioralQuestions =mongoose.Schema({
-    quesion:{
+    question:{
         type:String,
         required:[
             true,"Behavioral questions is required"
@@ -85,7 +85,7 @@ const skillGapAnalysis =mongoose.Schema({
 })
 const preparationPlan =mongoose.Schema({
     day:{
-        type:Number,
+        type:String,
         required:[
             true,"Day is required"
         ]
@@ -132,6 +132,12 @@ const interviewSchema =mongoose.Schema({
     userId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'users'
+    },
+    title:{
+        type:String,
+        required:[
+            true,"Title is required"
+        ]
     }
 }
 ,{timestamps:true

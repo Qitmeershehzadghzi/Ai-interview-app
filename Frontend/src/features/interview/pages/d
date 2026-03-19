@@ -1,0 +1,88 @@
+{
+  "_id": {
+    "$oid": "69b1c54132b32bf11de7ab46"
+  },
+  "matchScore": 95,
+  "technicalQuestions": [
+    {
+      "question": "Can you explain the purpose of React Hooks, specifically `useState` and `useEffect`, and provide a scenario where you would use each?",
+      "intention": "To assess the candidate's understanding of modern React practices, specifically the use and benefits of Hooks for state management and side effects, which is explicitly mentioned in the job description.",
+      "answer": "The candidate should explain that React Hooks allow functional components to use state and other React features without writing a class. For `useState`, they should describe how it declares a state variable and provides a function to update it, giving an example like managing input field values or a counter. For `useEffect`, they should explain its use for side effects (data fetching, subscriptions, manual DOM manipulations) and provide an example, such as fetching data after component mount or updating the document title."
+    },
+    {
+      "question": "Describe the process of designing a RESTful API for a typical MERN stack application, from defining endpoints to handling data. What considerations do you make for a 'clean and maintainable' API?",
+      "intention": "To evaluate the candidate's understanding of backend development, REST principles, and best practices for creating APIs that are easy to understand and maintain, aligning with the job's responsibilities.",
+      "answer": "The candidate should explain REST principles (stateless, client-server, uniform interface). For design, they should mention using clear, noun-based resource URLs (e.g., `/api/products`), appropriate HTTP methods (GET for retrieval, POST for creation, PUT/PATCH for updates, DELETE for removal). Data handling involves input validation, error handling with meaningful status codes (e.g., 200, 201, 400, 404, 500), and proper data serialization. For clean and maintainable code, they should mention consistent naming conventions, modular routing, middleware for authentication/logging, and comprehensive documentation (e.g., Swagger/OpenAPI)."
+    },
+    {
+      "question": "You have experience with MongoDB. Can you explain a scenario where MongoDB would be a more suitable choice for a project compared to a relational database like PostgreSQL, and vice versa?",
+      "intention": "To assess the candidate's knowledge of database selection criteria and their understanding of the strengths and weaknesses of different database types, demonstrating their ability to make informed architectural decisions.",
+      "answer": "The candidate should explain that MongoDB (NoSQL, document-based) is good for applications with rapidly changing data schemas, large amounts of unstructured data, and needs for horizontal scalability, like real-time analytics, content management systems, or IoT applications. They should note its flexible schema. Conversely, a relational database like PostgreSQL (SQL) is better for applications requiring strict data consistency (ACID transactions), complex joins, and predefined, rigid schemas, such as financial systems, inventory management, or applications with intricate relationships between entities. The key is understanding when schema flexibility or strict referential integrity is paramount."
+    }
+  ],
+  "behavioralQuestions": [
+    {
+      "question": "Can you tell me about a time you faced a challenging technical problem during your internship or a project, and how you approached solving it?",
+      "intention": "To assess the candidate's problem-solving skills, resilience, and their process for debugging and overcoming obstacles, which is a key requirement for a developer.",
+      "answer": "The candidate should use the STAR method (Situation, Task, Action, Result). They should describe a specific technical challenge (e.g., a bug, integration issue, performance problem), the task of resolving it, the specific actions they took (e.g., debugging tools, searching documentation, asking for help, testing different solutions), and the positive outcome of their efforts."
+    },
+    {
+      "question": "The job description mentions a willingness to learn. Can you describe a new technology or concept you had to learn quickly for a project, and how you approached learning it?",
+      "intention": "To evaluate the candidate's proactive learning ability, adaptability, and how they acquire new skills to meet project demands, which is crucial in a rapidly evolving tech environment.",
+      "answer": "The candidate should describe a specific instance (e.g., learning a new library, framework, or tool). They should detail their learning process, which might include reading documentation, following tutorials, building small projects, seeking mentorship, or contributing to open-source projects. They should emphasize the speed and effectiveness of their learning and how it positively impacted the project."
+    },
+    {
+      "question": "You mentioned collaborating with peers and mentors during your internship. Can you share an experience where you had to work closely with others on a project, and what was your specific contribution to the team's success?",
+      "intention": "To understand the candidate's ability to work effectively in a team, communicate, and contribute collaboratively to shared goals, as the job requires working in a collaborative development environment.",
+      "answer": "The candidate should describe a team project (Situation, Task). They should clearly articulate their role and specific contributions (Action), such as pair programming, code reviews, sharing knowledge, resolving conflicts, or integrating components. They should highlight how their efforts contributed to the overall success of the project and the team (Result)."
+    }
+  ],
+  "skillGapAnalysis": [
+    {
+      "skill": "Advanced Database Management (e.g., indexing, aggregation pipelines, security best practices)",
+      "severity": "low"
+    }
+  ],
+  "preparationPlan": [
+    {
+      "day": "Day 1",
+      "focus": "MERN Stack Core Concepts & React Mastery",
+      "tasks": [
+        "Review React JS fundamentals: component lifecycle, state management (class vs. functional components), props drilling, and context API.",
+        "Practice building small React components and integrate them into a simple application.",
+        "Revisit Node.js and Express.js basics: event loop, middleware, routing, and error handling.",
+        "Brush up on MongoDB CRUD operations and basic data modeling concepts (embedding vs. referencing)."
+      ]
+    },
+    {
+      "day": "Day 2",
+      "focus": "API Development, Modern React & Git Workflow",
+      "tasks": [
+        "Deep dive into React Hooks: `useState`, `useEffect`, `useContext`, and `useReducer`. Practice implementing them in various scenarios.",
+        "Design and implement a mock RESTful API using Node.js and Express.js, focusing on proper resource naming, HTTP methods, and status codes.",
+        "Implement basic authentication (e.g., JWT) within the mock API.",
+        "Review Git commands for collaborative development: branching strategies, merging, rebasing, and resolving merge conflicts."
+      ]
+    },
+    {
+      "day": "Day 3",
+      "focus": "Problem-Solving, Database Optimization & Behavioral Prep",
+      "tasks": [
+        "Work through a few LeetCode or HackerRank problems focusing on data structures and algorithms commonly asked in junior developer interviews.",
+        "Explore MongoDB indexing for performance optimization and understand basic aggregation pipeline concepts.",
+        "Practice articulating solutions clearly, explaining thought processes and time/space complexity.",
+        "Prepare answers for common behavioral questions using the STAR method, focusing on teamwork, problem-solving, and learning experiences."
+      ]
+    }
+  ],
+  "userId": {
+    "$oid": "69ae26cd574fb56a2e566a67"
+  },
+  "createdAt": {
+    "$date": "2026-03-11T19:40:49.785Z"
+  },
+  "updatedAt": {
+    "$date": "2026-03-11T19:40:49.785Z"
+  },
+  "__v": 0
+}

@@ -1,0 +1,569 @@
+// ── Shared Variables (mirrors home.scss theme) ────────────────────────────────
+$bg-page:      #0d1117;
+$bg-card:      #161b22;
+$bg-panel:     #1c2230;
+$bg-input:     #1e2535;
+$border-color: #2a3348;
+$text-primary: #e6edf3;
+$text-muted:   #7d8590;
+$accent:       #ff2d78;
+$font-stack:   system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+// severity palette
+$severity-high:   #ff4d4d;
+$severity-medium: #f5a623;
+$severity-low:    #3fb950;
+
+// ── Keyframes ─────────────────────────────────────────────────────────────────
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0);   }
+}
+
+@keyframes expandDown {
+    from { opacity: 0; transform: translateY(-5px); }
+    to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-ring {
+    0%, 100% { box-shadow: 0 0 0 0 rgba($accent, 0.25); }
+    50%       { box-shadow: 0 0 0 8px rgba($accent, 0);  }
+}
+
+// ── Scrollbar ─────────────────────────────────────────────────────────────────
+* {
+    &::-webkit-scrollbar { display: none; }
+    scrollbar-width: none;
+}
+
+// ── Loading Screen ────────────────────────────────────────────────────────────
+.loading-screen {
+    width: 100%;
+    min-height: 100vh;
+    background-color: $bg-page;
+    color: $text-primary;
+    font-family: $font-stack;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+
+    &::before {
+        content: '';
+        width: 28px;
+        height: 28px;
+        border: 2px solid $border-color;
+        border-top-color: $accent;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+    }
+
+    h1 {
+        font-size: 0.875rem;
+        font-weight: 400;
+        color: $text-muted;
+        margin: 0;
+        letter-spacing: 0.03em;
+    }
+}
+
+// ── Page Shell ────────────────────────────────────────────────────────────────
+.interview-page {
+    width: 100%;
+    min-height: 100vh;
+    background-color: $bg-page;
+    color: $text-primary;
+    font-family: $font-stack;
+    display: flex;
+    align-items: stretch;
+    padding: 1.5rem;
+    box-sizing: border-box;
+}
+
+// ── 3-Column Layout ───────────────────────────────────────────────────────────
+.interview-layout {
+    display: flex;
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    background-color: $bg-card;
+    border: 1px solid $border-color;
+    border-radius: 1rem;
+    overflow: hidden;
+    justify-content: space-between;
+}
+
+.interview-divider {
+    width: 1px;
+    background-color: $border-color;
+    flex-shrink: 0;
+}
+
+// ── Left Nav ──────────────────────────────────────────────────────────────────
+.interview-nav {
+    width: 220px;
+    flex-shrink: 0;
+    padding: 1.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    position: relative;
+
+    // subtle top accent stripe
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(to right, $accent, rgba($accent, 0.15));
+        border-radius: 0 0 2px 2px;
+    }
+
+    &__label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: $text-muted;
+        padding: 0 0.75rem;
+        margin-bottom: 0.25rem;
+        margin-top: 0.5rem;
+    }
+
+    &__item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        width: 100%;
+        padding: 0.65rem 0.75rem;
+        background: none;
+        border: 1px solid transparent;
+        border-radius: 0.5rem;
+        color: $text-muted;
+        font-family: $font-stack;
+        font-size: 0.855rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-align: left;
+        transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+
+        &:hover {
+            background-color: $bg-panel;
+            color: $text-primary;
+            border-color: $border-color;
+        }
+
+        &--active {
+            background-color: rgba($accent, 0.08);
+            color: $accent;
+            border-color: rgba($accent, 0.2);
+            font-weight: 600;
+
+            .interview-nav__icon svg {
+                stroke: $accent;
+            }
+        }
+    }
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        opacity: 0.7;
+
+        .interview-nav__item--active & {
+            opacity: 1;
+        }
+    }
+}
+
+// ── Center Content ────────────────────────────────────────────────────────────
+.interview-content {
+    flex: 1;
+    padding: 1.75rem 2rem;
+    overflow-y: auto;
+    min-height: initial;
+    max-height: calc(100vh - 3rem);
+    padding-bottom: 5rem;
+
+    section {
+        min-height: 100%;
+        animation: fadeSlideIn 0.22s ease both;
+    }
+}
+
+.content-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid $border-color;
+
+    h2 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: $text-primary;
+        margin: 0;
+    }
+
+    &__count {
+        font-size: 0.75rem;
+        color: $text-muted;
+        background-color: $bg-panel;
+        padding: 0.15rem 0.6rem;
+        border-radius: 2rem;
+        border: 1px solid $border-color;
+    }
+}
+
+// ── Question Cards ────────────────────────────────────────────────────────────
+.q-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.q-card {
+    background-color: $bg-panel;
+    border: 1px solid $border-color;
+    border-radius: 0.65rem;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    &:hover {
+        border-color: lighten($border-color, 10%);
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    &__header {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.95rem 1rem;
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 0.15s;
+
+        &:hover {
+            background-color: rgba($bg-input, 0.5);
+        }
+    }
+
+    &__index {
+        flex-shrink: 0;
+        font-size: 0.62rem;
+        font-weight: 800;
+        color: $accent;
+        background-color: rgba($accent, 0.09);
+        border: 1px solid rgba($accent, 0.18);
+        border-radius: 0.3rem;
+        padding: 0.15rem 0.45rem;
+        margin-top: 3px;
+        letter-spacing: 0.03em;
+    }
+
+    &__question {
+        flex: 1;
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: $text-primary;
+        line-height: 1.55;
+    }
+
+    &__chevron {
+        flex-shrink: 0;
+        color: $text-muted;
+        transition: transform 0.2s, color 0.2s;
+        margin-top: 3px;
+
+        &--open {
+            transform: rotate(180deg);
+            color: $accent;
+        }
+    }
+
+    &__body {
+        animation: expandDown 0.18s ease both;
+        padding: 0.85rem 1rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        border-top: 1px solid $border-color;
+    }
+
+    &__section {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+
+        p {
+            margin: 0;
+            font-size: 0.835rem;
+            color: lighten($text-muted, 15%);
+            line-height: 1.65;
+        }
+    }
+
+    &__tag {
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 0.12rem 0.45rem;
+        border-radius: 0.25rem;
+        width: fit-content;
+
+        &--intention {
+            color: #a78bfa;
+            background-color: rgba(#a78bfa, 0.1);
+            border: 1px solid rgba(#a78bfa, 0.2);
+        }
+
+        &--answer {
+            color: $severity-low;
+            background-color: rgba($severity-low, 0.1);
+            border: 1px solid rgba($severity-low, 0.2);
+        }
+    }
+}
+
+// ── Road Map ──────────────────────────────────────────────────────────────────
+.roadmap-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 28px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(to bottom, $accent, rgba($accent, 0.08));
+        border-radius: 1px;
+    }
+}
+
+.roadmap-day {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem 0 1.25rem 3.5rem;
+    position: relative;
+    animation: fadeSlideIn 0.25s ease both;
+
+    @for $i from 1 through 10 {
+        &:nth-child(#{$i}) { animation-delay: #{$i * 0.05}s; }
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 21px;
+        top: 1rem;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background-color: $bg-card;
+        border: 2px solid $accent;
+        transition: background-color 0.2s;
+        z-index: 1;
+    }
+
+    &:hover::before {
+        background-color: rgba($accent, 0.12);
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    &__badge {
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: $accent;
+        background-color: rgba($accent, 0.09);
+        border: 1px solid rgba($accent, 0.22);
+        padding: 0.1rem 0.5rem;
+        border-radius: 2rem;
+        letter-spacing: 0.03em;
+    }
+
+    &__focus {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: $text-primary;
+    }
+
+    &__tasks {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+
+        li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: 0.835rem;
+            color: lighten($text-muted, 12%);
+            line-height: 1.55;
+        }
+    }
+
+    &__bullet {
+        flex-shrink: 0;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background-color: rgba($accent, 0.45);
+        margin-top: 9px;
+    }
+}
+
+// ── Right Sidebar ─────────────────────────────────────────────────────────────
+.interview-sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    padding: 1.75rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.sidebar-divider {
+    height: 1px;
+    background-color: $border-color;
+}
+
+// ── Match Score ───────────────────────────────────────────────────────────────
+.match-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.65rem;
+
+    &__label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: $text-muted;
+        margin: 0;
+        align-self: flex-start;
+    }
+
+    &__ring {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid;
+        transition: box-shadow 0.3s;
+
+        &.score--high {
+            border-color: $severity-low;
+            animation: pulse-ring 2.5s ease-in-out infinite;
+        }
+
+        &.score--mid {
+            border-color: $severity-medium;
+        }
+
+        &.score--low {
+            border-color: $severity-high;
+        }
+    }
+
+    &__value {
+        font-size: 1.65rem;
+        font-weight: 800;
+        color: $text-primary;
+        line-height: 1;
+        letter-spacing: -0.02em;
+    }
+
+    &__pct {
+        font-size: 0.7rem;
+        color: $text-muted;
+        margin-top: -1px;
+    }
+
+    &__sub {
+        margin: 0;
+        font-size: 0.75rem;
+        color: $severity-low;
+        text-align: center;
+    }
+}
+
+// ── Skill Gaps ────────────────────────────────────────────────────────────────
+.skill-gaps {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+
+    &__label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: $text-muted;
+        margin: 0;
+    }
+
+    &__list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+    }
+}
+
+.skill-tag {
+    font-size: 0.755rem;
+    font-weight: 500;
+    padding: 0.28rem 0.65rem;
+    border-radius: 0.4rem;
+    border: 1px solid;
+    cursor: default;
+    transition: opacity 0.15s;
+
+    &:hover { opacity: 0.8; }
+
+    &--high {
+        color: $severity-high;
+        background-color: rgba($severity-high, 0.09);
+        border-color: rgba($severity-high, 0.22);
+    }
+
+    &--medium {
+        color: $severity-medium;
+        background-color: rgba($severity-medium, 0.09);
+        border-color: rgba($severity-medium, 0.22);
+    }
+
+    &--low {
+        color: $severity-low;
+        background-color: rgba($severity-low, 0.09);
+        border-color: rgba($severity-low, 0.22);
+    }
+}
