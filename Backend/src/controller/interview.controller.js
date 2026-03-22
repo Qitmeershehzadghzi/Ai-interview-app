@@ -50,7 +50,7 @@
 
 
 import { PDFParse } from "pdf-parse";
-
+import { generateResumePdf } from "../services/ai.service.js";
 import generateInterviewReport from "../services/ai.service.js";
 import interviewReportModel from "../models/interviewReport.model.js";
 /**
@@ -179,6 +179,32 @@ export const getAllInterviewReports = async (req, res) => {
 
   }
 
+}
+
+
+/**
+ * @description controller to generate resume pdf based on  user self description and job description and resume content
+ */
+
+
+export const generateResumePdfController = async (req, res) => {
+  const {interviewId} = req.params;
+  const interviewReport = await interviewReportModel.findById(interviewId);
+  if(!interviewReport){
+    return res.status(404).json({
+      success: false,
+      message: "Interview report not found"
+    })
+  }
+
+  const {resume, jobDescription, selfDescription} = interviewReport;
+
+const pdfBuffer = await generateResumePdf({resume, jobDescription, selfDescription});
+res.set({
+  "Content-Type": "application/pdf",
+  "Content-Disposition": `attachment; filename=resume_${interviewId}.pdf`
+})
+res.send(pdfBuffer);
 }
 
 

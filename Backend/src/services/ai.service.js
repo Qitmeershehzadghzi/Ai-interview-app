@@ -72,17 +72,71 @@ const interviewReportSchema = {
 
 async function generateInterviewReport({ resume, jobDescription, selfDescription }) {
 
-  const prompt = `
-Generate a detailed interview report for a candidate.
+const prompt = `
+You are a senior technical interviewer and hiring manager.
 
-Candidate Resume:
+Your task is to deeply evaluate a candidate based on the following:
+
+--- Candidate Resume ---
 ${resume}
 
-Job Description:
+--- Job Description ---
 ${jobDescription}
 
-Self Description:
+--- Self Description ---
 ${selfDescription}
+
+====================================
+
+STRICT INSTRUCTIONS:
+
+1. You MUST return ONLY valid JSON matching the given schema.
+2. Do NOT include explanations, comments, or extra text outside JSON.
+
+====================================
+
+EVALUATION GUIDELINES:
+
+1. Analyze how well the candidate matches the job description:
+   - Skills match
+   - Experience relevance
+   - Project alignment
+
+2. Identify strengths:
+   - Technical strengths
+   - Soft skills inferred from selfDescription
+
+3. Identify weaknesses / gaps:
+   - Missing skills
+   - Lack of experience in required areas
+
+4. Generate interview questions:
+   - Technical Questions (based on job requirements)
+   - Behavioral Questions (based on personality and experience)
+
+5. Skill Gap Analysis:
+   - Clearly mention missing or weak areas
+
+6. Preparation Plan:
+   - Step-by-step improvement plan
+   - What to study
+   - What to practice
+
+====================================
+
+QUALITY RULES:
+
+- Be specific, not generic
+- Questions should be realistic and job-relevant
+- Avoid repeating content
+- Keep answers concise but meaningful
+- Use professional tone
+
+====================================
+
+OUTPUT FORMAT:
+
+Return ONLY JSON that strictly follows the provided schema.
 `;
 
   const response = await ai.models.generateContent({
@@ -107,17 +161,75 @@ const pdfBuffer = await page.pdf({ format: 'A4' });
 await browser.close();
 return pdfBuffer;
 }
- async function generateResumePdf({ resume, jobDescription, selfDescription }) {
+export async function generateResumePdf({ resume, jobDescription, selfDescription }) {
   const resumePdfSchema = z.object({
     html: z.string().describe("HTML content of the resume which can be used to generate PDF")
   });
   const prompt = `
-Generate a resume  for a candidate's with the following details:
-Candidate Resume:${resume}
-Job Description:${jobDescription}
-Self Description:${selfDescription}
-the response should be a JSON with only one field "html" which contains the HTML content of the resume which can be used to generate PDF
-`
+You are an expert resume designer and ATS optimization specialist.
+
+Create a highly professional, modern, and clean resume based on the following inputs:
+
+--- Candidate Resume ---
+${resume}
+
+--- Job Description ---
+${jobDescription}
+
+--- Self Description ---
+${selfDescription}
+
+========================
+
+STRICT INSTRUCTIONS:
+
+1. Output MUST be a valid JSON with ONLY one field:
+{
+  "html": "<complete HTML here>"
+}
+
+2. Generate COMPLETE HTML document:
+- Include <!DOCTYPE html>, <html>, <head>, <body>
+
+3. Styling Rules:
+- Use ONLY inline CSS (NO external CSS, NO Google Fonts, NO CDN)
+- Use clean, minimal, professional layout
+- Use standard fonts like Arial, Helvetica, sans-serif
+- Proper spacing, margins, headings, and sections
+
+4. Resume Structure:
+- Header (Name, Email, Phone, Location)
+- Professional Summary (based on selfDescription + resume)
+- Skills (relevant to jobDescription)
+- Experience (if available in resume)
+- Education
+- Projects (if available)
+- Certifications (if any)
+
+5. Optimization:
+- Tailor the resume according to the job description
+- Highlight relevant skills and keywords
+- Keep content concise and impactful
+
+6. IMPORTANT (for PDF generation):
+- DO NOT use:
+  - external images
+  - external fonts
+  - scripts
+- Keep layout simple and stable for PDF rendering
+
+7. Make it visually attractive using:
+- section headings with borders or background
+- proper alignment
+- readable font sizes
+
+8. Ensure:
+- HTML is VALID
+- No broken tags
+- No missing closing tags
+
+ONLY return JSON. Do not include explanations.
+`;
 const response = await ai.models.generateContent({
   model: "gemini-2.5-flash",
   contents: prompt,
@@ -131,4 +243,4 @@ const pdfBuffer = await generatePdfForHtml(jsonContent.html);
 return pdfBuffer;
 
 }
-export default {  generateInterviewReport, generateResumePdf };
+export default  generateInterviewReport;

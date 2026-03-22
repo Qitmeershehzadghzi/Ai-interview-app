@@ -4,6 +4,7 @@ import interviewController from "../controller/interview.controller.js";
 import upload from "../middleware/file.middleware.js";
 import { generateInterviewReportById } from "../controller/interview.controller.js";
 import { getAllInterviewReports } from "../controller/interview.controller.js";
+import { generateResumePdfController } from "../controller/interview.controller.js";
 const interviewRouter = express.Router();
 /**
  * @route POST /interview
@@ -27,3 +28,13 @@ interviewRouter.get('/report/:interviewId', authMiddleware.authUser, generateInt
  */
 interviewRouter.get('/', authMiddleware.authUser, getAllInterviewReports);
 export default interviewRouter;
+
+
+/**
+ * @route POST /api/interview/report/InterviewReportId
+ * @desc Get interview report by id
+ * @access Private
+ */
+
+
+interviewRouter.post('/resume/pdf/:interviewId', authMiddleware.authUser, generateResumePdfController);
