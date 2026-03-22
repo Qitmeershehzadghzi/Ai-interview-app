@@ -73,9 +73,9 @@ const interviewReportSchema = {
 async function generateInterviewReport({ resume, jobDescription, selfDescription }) {
 
 const prompt = `
-You are a senior technical interviewer and hiring manager.
+You are a highly experienced senior technical interviewer, talent evaluator, and hiring manager with 15+ years of experience.
 
-Your task is to deeply evaluate a candidate based on the following:
+Your task is to provide an exhaustive evaluation of a candidate against the job description using the inputs below:
 
 --- Candidate Resume ---
 ${resume}
@@ -90,53 +90,74 @@ ${selfDescription}
 
 STRICT INSTRUCTIONS:
 
-1. You MUST return ONLY valid JSON matching the given schema.
-2. Do NOT include explanations, comments, or extra text outside JSON.
+1. Output MUST be valid JSON strictly following the schema provided.
+2. Do NOT include any extra text, explanation, comments, or formatting outside the JSON.
+3. Include all fields: matchScore, technicalQuestions[], behavioralQuestions[], skillGapAnalysis[], preparationPlan[].
+4. Ensure all objects have all required keys. Use realistic values. 
+5. Avoid generic or repetitive content. Be precise and detailed.
 
 ====================================
 
 EVALUATION GUIDELINES:
 
-1. Analyze how well the candidate matches the job description:
-   - Skills match
-   - Experience relevance
-   - Project alignment
+1. Match Score:
+   - Evaluate skills, experience, projects, and relevance to job description.
+   - Return an integer from 0-100.
 
-2. Identify strengths:
-   - Technical strengths
-   - Soft skills inferred from selfDescription
+2. Strengths:
+   - Highlight technical strengths, frameworks, languages, tools.
+   - Include inferred soft skills from selfDescription.
 
-3. Identify weaknesses / gaps:
-   - Missing skills
-   - Lack of experience in required areas
+3. Weaknesses / Gaps:
+   - Identify missing or weak skills.
+   - Mention gaps in experience relative to job description.
 
-4. Generate interview questions:
-   - Technical Questions (based on job requirements)
-   - Behavioral Questions (based on personality and experience)
+4. Technical Questions:
+   - Generate 5-10 realistic questions relevant to the job role.
+   - Include "question", "intention", and example "answer" fields.
 
-5. Skill Gap Analysis:
-   - Clearly mention missing or weak areas
+5. Behavioral Questions:
+   - Generate 3-5 questions assessing problem-solving, teamwork, leadership, communication.
+   - Include "question", "intention", and example "answer".
 
-6. Preparation Plan:
-   - Step-by-step improvement plan
-   - What to study
-   - What to practice
+6. Skill Gap Analysis:
+   - Provide skills with "skill" and "severity" ("low", "medium", "high").
+
+7. Preparation Plan:
+   - Provide a clear day-by-day improvement roadmap.
+   - Include "day", "focus", and list of actionable "tasks" to improve weak areas.
 
 ====================================
 
 QUALITY RULES:
 
-- Be specific, not generic
-- Questions should be realistic and job-relevant
-- Avoid repeating content
-- Keep answers concise but meaningful
-- Use professional tone
+- Be specific and job-relevant, no vague statements.
+- Questions must be realistic and reflect industry standards.
+- Avoid repeating skills or questions.
+- Answers should be concise, accurate, and professional.
+- Maintain consistent and formal tone.
 
 ====================================
 
 OUTPUT FORMAT:
 
-Return ONLY JSON that strictly follows the provided schema.
+Return ONLY valid JSON strictly matching the schema:
+
+{
+  "matchScore": number,
+  "technicalQuestions": [
+    { "question": string, "intention": string, "answer": string }
+  ],
+  "behavioralQuestions": [
+    { "question": string, "intention": string, "answer": string }
+  ],
+  "skillGapAnalysis": [
+    { "skill": string, "severity": "low"|"medium"|"high" }
+  ],
+  "preparationPlan": [
+    { "day": number, "focus": string, "tasks": [string] }
+  ]
+}
 `;
 
   const response = await ai.models.generateContent({
@@ -165,10 +186,10 @@ export async function generateResumePdf({ resume, jobDescription, selfDescriptio
   const resumePdfSchema = z.object({
     html: z.string().describe("HTML content of the resume which can be used to generate PDF")
   });
-  const prompt = `
-You are an expert resume designer and ATS optimization specialist.
+const prompt = `
+You are an expert resume designer, career consultant, and ATS optimization specialist.
 
-Create a highly professional, modern, and clean resume based on the following inputs:
+Create a highly professional, visually appealing, and modern resume based on the following inputs:
 
 --- Candidate Resume ---
 ${resume}
@@ -179,59 +200,46 @@ ${jobDescription}
 --- Self Description ---
 ${selfDescription}
 
-========================
+====================================
 
 STRICT INSTRUCTIONS:
 
-1. Output MUST be a valid JSON with ONLY one field:
-{
-  "html": "<complete HTML here>"
-}
+1. Output MUST be valid JSON with only one key: { "html": "<complete HTML here>" }.
+2. Generate a fully complete HTML document:
+   - Include <!DOCTYPE html>, <html>, <head>, <body>.
+   - Use only inline CSS. No external CSS, fonts, or scripts.
+   - Ensure layout is clean, minimal, professional, and suitable for PDF generation.
 
-2. Generate COMPLETE HTML document:
-- Include <!DOCTYPE html>, <html>, <head>, <body>
-
-3. Styling Rules:
-- Use ONLY inline CSS (NO external CSS, NO Google Fonts, NO CDN)
-- Use clean, minimal, professional layout
-- Use standard fonts like Arial, Helvetica, sans-serif
-- Proper spacing, margins, headings, and sections
+3. Layout & Styling:
+   - Use standard fonts: Arial, Helvetica, sans-serif.
+   - Proper spacing, margins, headings, and sections.
+   - Section headings should be visually distinct (background color or border).
+   - Ensure readability: font sizes, alignment, white space.
+   - Avoid broken tags or invalid HTML.
 
 4. Resume Structure:
-- Header (Name, Email, Phone, Location)
-- Professional Summary (based on selfDescription + resume)
-- Skills (relevant to jobDescription)
-- Experience (if available in resume)
-- Education
-- Projects (if available)
-- Certifications (if any)
-
+   - Header: Name, Email, Phone, Location.
+   - Professional Summary: Concise, impactful, tailored to job.
+   - Skills: Highlight relevant to jobDescription, grouped logically.
+   - Experience: Company, role, duration, key achievements.
+   - Education: Degree, institution, years.
+   - Projects: Highlight key achievements if present in resume.
+   - Certifications: Include if mentioned.
+   
 5. Optimization:
-- Tailor the resume according to the job description
-- Highlight relevant skills and keywords
-- Keep content concise and impactful
+   - Tailor content to jobDescription.
+   - Include keywords for ATS.
+   - Keep sections concise and impactful.
+   - Maintain professional tone.
 
-6. IMPORTANT (for PDF generation):
-- DO NOT use:
-  - external images
-  - external fonts
-  - scripts
-- Keep layout simple and stable for PDF rendering
+6. Important:
+   - Do NOT include images, external fonts, scripts, or external resources.
+   - HTML must be fully renderable in browser and PDF.
 
-7. Make it visually attractive using:
-- section headings with borders or background
-- proper alignment
-- readable font sizes
-
-8. Ensure:
-- HTML is VALID
-- No broken tags
-- No missing closing tags
-
-ONLY return JSON. Do not include explanations.
+ONLY RETURN JSON. Do not include explanations or extra text.
 `;
 const response = await ai.models.generateContent({
-  model: "gemini-2.5-flash",
+  model: "gemini-3.1-flash-lite-preview",
   contents: prompt,
   config: {
     responseMimeType: "application/json",

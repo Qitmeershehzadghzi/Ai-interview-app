@@ -1,7 +1,8 @@
 import {
     generateInterviewReport,
     getAllInterviewReports,
-    getInterviewReportsById
+    getInterviewReportsById,
+    generateResumePdf as generateResumePdfAPI // ✅ rename to avoid conflict
 } from '../services/interview.api.js'
 
 import { useContext } from 'react'
@@ -25,6 +26,7 @@ export const useInterview = () => {
     } = context
 
 
+    // ✅ Generate Interview Report
     const generateReport = async ({ selfDescription, jobDescription, resume }) => {
 
         setLoading(true)
@@ -38,7 +40,6 @@ export const useInterview = () => {
             })
 
             setReport(data.data)
-
             setReports(prev => [data.data, ...prev])
 
             return data.data
@@ -56,6 +57,7 @@ export const useInterview = () => {
     }
 
 
+    // ✅ Get Single Report
     const getReportById = async (interviewId) => {
 
         setLoading(true)
@@ -82,6 +84,7 @@ export const useInterview = () => {
     }
 
 
+    // ✅ Get All Reports
     const getReports = async () => {
 
         try {
@@ -89,9 +92,7 @@ export const useInterview = () => {
             const data = await getAllInterviewReports()
 
             if (data.success) {
-
                 setReports(data.data)
-
                 return data.data
             }
 
@@ -104,12 +105,48 @@ export const useInterview = () => {
     }
 
 
+    // ✅ FIXED: Generate Resume PDF
+    const generateResumePdf = async ({ interviewReportId }) => {
+
+        setLoading(true)
+
+        try {
+
+            // 🔥 call API (NOT itself)
+            const response = await generateResumePdfAPI({ interviewReportId })
+
+            // 🔥 response is blob (PDF)
+            const url = window.URL.createObjectURL(new Blob([response]))
+
+            const link = document.createElement('a')
+            link.href = url
+            link.setAttribute('download', 'resume.pdf')
+
+            document.body.appendChild(link)
+            link.click()
+
+            link.remove()
+            window.URL.revokeObjectURL(url)
+
+        } catch (error) {
+
+            console.log(error)
+
+        } finally {
+
+            setLoading(false)
+
+        }
+    }
+
+
     return {
         generateReport,
         getReportById,
         getReports,
         loading,
         reports,
-        report
+        report,
+        generateResumePdf
     }
 }
