@@ -50,9 +50,10 @@ useEffect(() => {
   const fetchUser = async () => {
     try {
       const data = await getMe();
-      setUser(data.user);
+      setUser(data?.user ?? null);
     } catch (error) {
       console.log(error);
+      setUser(null);
     } finally {
       setLoading(false);
     }

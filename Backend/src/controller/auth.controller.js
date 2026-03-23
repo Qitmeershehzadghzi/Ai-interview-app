@@ -25,7 +25,7 @@ async function registerUserController(req, res) {
         const user = await userModel.create({ userName, email, password: hash });
 
         const token = jwt.sign({ id: user._id, userName: user.userName }, process.env.JWT_SECRET, { expiresIn: "1d" });
-        res.cookie("token", token, { httpOnly: true });
+        res.cookie("token", token, { httpOnly: true, sameSite: "none", secure: true });
 
         return res.status(201).json({
             message: "User registered successfully",
@@ -53,7 +53,7 @@ async function loginUserController(req, res) {
         if (!isPasswordMatch) return res.status(404).json({ message: "Invalid email or password" });
 
         const token = jwt.sign({ id: user._id, userName: user.userName }, process.env.JWT_SECRET, { expiresIn: "1d" });
-        res.cookie("token", token, { httpOnly: true });
+        res.cookie("token", token, { httpOnly: true, sameSite: "none", secure: true });
 
         return res.status(200).json({
             message: "User logged in successfully",
