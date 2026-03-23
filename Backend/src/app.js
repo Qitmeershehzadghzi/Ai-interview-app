@@ -13,6 +13,6 @@ app.use(cookieParser())
 app.use('/api/auth',authRouter)
 app.use('/api/interview',interviewRouter)
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello World");
 });
 module.exports = app;
