@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 
 /**
@@ -146,4 +146,4 @@ const interviewSchema =mongoose.Schema({
 
 const InterviewReport = mongoose.model("InterviewReport",interviewSchema)
 
-export default InterviewReport
+module.exports = InterviewReport

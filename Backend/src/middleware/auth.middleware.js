@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
-import tokenBlacklistModel from '../models/tokenblacklist.modal.js';
+const jwt = require("jsonwebtoken");
+const tokenBlacklistModel = require("../models/tokenblacklist.modal.js");
 
 async function authUser(req,res,next){
     const token =req.cookies.token;
@@ -25,6 +25,6 @@ next()
     }
 }
 
-export default{
+module.exports ={
     authUser
 }

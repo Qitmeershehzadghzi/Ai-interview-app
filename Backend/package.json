@@ -11,7 +11,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.2.3",
     "multer": "^2.1.1",
-    "pdf-parse": "^2.4.5",
+    "pdf-parse": "^1.1.1",
     "puppeteer": "^24.39.1",
     "zod": "^4.3.6",
     "zod-to-json-schema": "^3.25.1"
@@ -26,5 +26,5 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module"
+  "type": "commonjs"
 }

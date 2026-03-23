@@ -1,7 +1,7 @@
-import userModel from "../models/user.model.js";
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
-import tokenBlacklistModel from "../models/tokenblacklist.modal.js";
+const userModel = require("../models/user.model.js");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const tokenBlacklistModel = require("../models/tokenblacklist.modal.js");
 /**
  * @name registerUserController
  * @descrption register a new user  exprects userName,email and password in req.body
@@ -126,7 +126,7 @@ res.status(201).json({
 }
 
 
-export default{
+module.exports ={
     registerUserController,
     loginUserController,
     logoutUserController,

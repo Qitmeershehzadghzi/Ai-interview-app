@@ -1,7 +1,8 @@
-import dotenv from "dotenv";
+const dotenv = require("dotenv");
 dotenv.config(); // ✅ sabse pehle
-import app from "./src/app.js";
-import connectDB from "./src/config/db.js";
+
+const app = require("./src/app.js");
+const connectDB = require("./src/config/db.js");
 
 
 connectDB();

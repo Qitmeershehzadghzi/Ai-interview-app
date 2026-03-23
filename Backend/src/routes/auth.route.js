@@ -1,7 +1,8 @@
-import expres from 'express';
-const authRouter =expres.Router();
-import authMiddleware from '../middleware/auth.middleware.js';
-import authController from '../controller/auth.controller.js'
+const express = require('express');
+const authRouter = express.Router();
+
+const authMiddleware = require('../middleware/auth.middleware.js');
+const authController = require('../controller/auth.controller.js');
 /**
  * @route POST /api/auth/register
     * @desc Register a new user
@@ -27,4 +28,4 @@ authRouter.post('/logout',authController.logoutUserController)
 */
 authRouter.get('/get-me',authMiddleware.authUser,authController.getMeController)
 
-export default authRouter;
+module.exports = authRouter;

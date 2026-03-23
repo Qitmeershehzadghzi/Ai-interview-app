@@ -1,7 +1,7 @@
-import { GoogleGenAI, Type } from "@google/genai";
-import puppeteer from "puppeteer";
- import { zodToJsonSchema } from "zod-to-json-schema";
- import {z} from "zod"; 
+const { GoogleGenAI, Type } = require("@google/genai");
+const puppeteer = require("puppeteer");
+ const { zodToJsonSchema } = require("zod-to-json-schema");
+ const {z} = require("zod"); 
 const ai = new GoogleGenAI({
   apiKey: process.env.YOUR_GEMINI_API_KEY || "AIzaSyDozapO8SdkDQRebd3oOzi24oSW-oxEv-g"
 });
@@ -182,7 +182,7 @@ const pdfBuffer = await page.pdf({ format: 'A4' });
 await browser.close();
 return pdfBuffer;
 }
-export async function generateResumePdf({ resume, jobDescription, selfDescription }) {
+ async function generateResumePdf({ resume, jobDescription, selfDescription }) {
   const resumePdfSchema = z.object({
     html: z.string().describe("HTML content of the resume which can be used to generate PDF")
   });
@@ -251,4 +251,4 @@ const pdfBuffer = await generatePdfForHtml(jsonContent.html);
 return pdfBuffer;
 
 }
-export default  generateInterviewReport;
+module.exports = {generateInterviewReport,generateResumePdf};
