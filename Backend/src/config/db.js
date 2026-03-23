@@ -1,21 +1,37 @@
 const mongoose = require("mongoose");
 
-let isConnected = false;
+// Cache the connection across serverless cold starts (Vercel/Lambda)
+let cached = global.mongoose;
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
 
 const connectDB = async () => {
-  if (isConnected) return;
-
-  try {
-    const db = await mongoose.connect(process.env.MONGODB_URL, {
-      serverSelectionTimeoutMS: 30000,
-    });
-
-    isConnected = db.connections[0].readyState;
-    console.log("MongoDB Connected");
-  } catch (error) {
-    console.log("DB ERROR:", error.message);
-    throw error;
+  // Already connected — reuse the existing connection
+  if (cached.conn) {
+    return cached.conn;
   }
+
+  const MONGO_URI = process.env.MONGODB_URL;
+  if (!MONGO_URI) {
+    throw new Error("MONGODB_URL is not defined in environment variables");
+  }
+
+  // If a connection is in progress, wait for it
+  if (!cached.promise) {
+    cached.promise = mongoose
+      .connect(MONGO_URI, {
+        serverSelectionTimeoutMS: 10000,
+        socketTimeoutMS: 45000,
+      })
+      .then((m) => {
+        console.log("MongoDB Connected ✅");
+        return m;
+      });
+  }
+
+  cached.conn = await cached.promise;
+  return cached.conn;
 };
 
 module.exports = connectDB;
