@@ -9,7 +9,7 @@ const app = express();
 
 // ✅ Allow both local dev and deployed frontend
 const allowedOrigins = [
-  'https://ai-interview-app-frontend.vercel.app',
+   'https://ai-interview-app-frontend.vercel.app',
   process.env.FRONTEND_URL, // set this in Vercel env vars
 ].filter(Boolean);
 
