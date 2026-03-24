@@ -1,9 +1,15 @@
 const { GoogleGenAI, Type } = require("@google/genai");
-const puppeteer = require("puppeteer");
- const { zodToJsonSchema } = require("zod-to-json-schema");
- const {z} = require("zod"); 
+
+// ✅ FIX 1: puppeteer replace
+const puppeteer = require("puppeteer-core");
+const chromium = require("@sparticuz/chromium");
+
+const { zodToJsonSchema } = require("zod-to-json-schema");
+const { z } = require("zod");
+
+// ✅ FIX 2: API key secure
 const ai = new GoogleGenAI({
-  apiKey: process.env.YOUR_GEMINI_API_KEY || "AIzaSyDozapO8SdkDQRebd3oOzi24oSW-oxEv-g"
+  apiKey: process.env.YOUR_GEMINI_API_KEY
 });
 
 const interviewReportSchema = {
@@ -19,9 +25,9 @@ const interviewReportSchema = {
       items: {
         type: Type.OBJECT,
         properties: {
-          question: { type: Type.STRING, description: "Technical question asked in interview" },
-          intention: { type: Type.STRING, description: "Why interviewer is asking this question" },
-          answer: { type: Type.STRING, description: "How candidate should answer this question" }
+          question: { type: Type.STRING },
+          intention: { type: Type.STRING },
+          answer: { type: Type.STRING }
         },
         required: ["question", "intention", "answer"]
       }
@@ -32,9 +38,9 @@ const interviewReportSchema = {
       items: {
         type: Type.OBJECT,
         properties: {
-          question: { type: Type.STRING, description: "Behavioral interview question" },
-          intention: { type: Type.STRING, description: "Why interviewer asks this behavioral question" },
-          answer: { type: Type.STRING, description: "Best way candidate should answer" }
+          question: { type: Type.STRING },
+          intention: { type: Type.STRING },
+          answer: { type: Type.STRING }
         },
         required: ["question", "intention", "answer"]
       }
@@ -45,8 +51,8 @@ const interviewReportSchema = {
       items: {
         type: Type.OBJECT,
         properties: {
-          skill: { type: Type.STRING, description: "Skill that candidate is missing" },
-          severity: { type: Type.STRING, description: "Skill gap severity (low, medium, high)" }
+          skill: { type: Type.STRING },
+          severity: { type: Type.STRING }
         },
         required: ["skill", "severity"]
       }
@@ -57,18 +63,19 @@ const interviewReportSchema = {
       items: {
         type: Type.OBJECT,
         properties: {
-          day: { type: Type.STRING, description: "Day number e.g Day 1" },
-          focus: { type: Type.STRING, description: "Focus topic of that day" },
-          tasks: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Tasks to complete that day" }
+          day: { type: Type.STRING },
+          focus: { type: Type.STRING },
+          tasks: { type: Type.ARRAY, items: { type: Type.STRING } }
         },
         required: ["day", "focus", "tasks"]
       }
     },
-    title: { type: Type.STRING, description: "Title of the interview report" }
+    title: { type: Type.STRING }
   },
   required: ["matchScore", "technicalQuestions", "behavioralQuestions", "skillGapAnalysis", "preparationPlan", "title"]
 };
 
+// ================= INTERVIEW REPORT =================
 
 async function generateInterviewReport({ resume, jobDescription, selfDescription }) {
 
@@ -160,32 +167,66 @@ Return ONLY valid JSON strictly matching the schema:
 }
 `;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: prompt,
-    config: {
-      systemInstruction: "You are an expert technical interviewer. You must evaluate the candidate's resume against the given job description and output a strict JSON strictly adhering to the schema. Do not deviate from the schema.",
-      responseMimeType: "application/json",
-      responseSchema: interviewReportSchema
+
+// ✅ Retry logic added (important)
+async function callAI(retries = 3) {
+  try {
+    return await ai.models.generateContent({
+      model: "gemini-1.5-flash",
+      contents: prompt,
+      config: {
+        systemInstruction: "You are an expert technical interviewer.",
+        responseMimeType: "application/json",
+        responseSchema: interviewReportSchema
+      }
+    });
+  } catch (err) {
+    if (retries > 0) {
+      await new Promise(res => setTimeout(res, 2000));
+      return callAI(retries - 1);
     }
+    throw err;
+  }
+}
+
+const response = await callAI();
+return JSON.parse(response.text);
+}
+
+// ================= PDF GENERATION =================
+
+async function generatePdfForHtml(htmlContent) {
+
+  const browser = await puppeteer.launch({
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath(),
+    headless: true,
   });
 
-  return JSON.parse(response.text);
-}
-async function generatePdfForHtml(htmlContent) {
-const browser = await puppeteer.launch();
-const page = await browser.newPage();
-await page.setContent(htmlContent, {
-  waitUntil: 'networkidle2',
-});
-const pdfBuffer = await page.pdf({ format: 'A4' });
-await browser.close();
-return pdfBuffer;
-}
- async function generateResumePdf({ resume, jobDescription, selfDescription }) {
-  const resumePdfSchema = z.object({
-    html: z.string().describe("HTML content of the resume which can be used to generate PDF")
+  const page = await browser.newPage();
+
+  await page.setContent(htmlContent, {
+    waitUntil: 'networkidle0',
   });
+
+  const pdfBuffer = await page.pdf({ 
+    format: 'A4',
+    printBackground: true
+  });
+
+  await browser.close();
+  return pdfBuffer;
+}
+
+// ================= RESUME PDF =================
+
+async function generateResumePdf({ resume, jobDescription, selfDescription }) {
+
+  const resumePdfSchema = z.object({
+    html: z.string()
+  });
+
 const prompt = `
 You are an expert resume designer, career consultant, and ATS optimization specialist.
 
@@ -238,17 +279,39 @@ STRICT INSTRUCTIONS:
 
 ONLY RETURN JSON. Do not include explanations or extra text.
 `;
-const response = await ai.models.generateContent({
-  model: "gemini-2.5-flash",
-  contents: prompt,
-  config: {
-    responseMimeType: "application/json",
-    responseSchema: zodToJsonSchema(resumePdfSchema)
-  }
-});
-const jsonContent = JSON.parse(response.text);
-const pdfBuffer = await generatePdfForHtml(jsonContent.html);
-return pdfBuffer;
 
+// ✅ Retry logic
+async function callAI(retries = 3) {
+  try {
+    return await ai.models.generateContent({
+      model: "gemini-1.5-flash",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: zodToJsonSchema(resumePdfSchema)
+      }
+    });
+  } catch (err) {
+    if (retries > 0) {
+      await new Promise(res => setTimeout(res, 2000));
+      return callAI(retries - 1);
+    }
+    throw err;
+  }
 }
-module.exports = {generateInterviewReport,generateResumePdf};
+
+const response = await callAI();
+
+const jsonContent = JSON.parse(response.text);
+
+const pdfBuffer = await generatePdfForHtml(jsonContent.html);
+
+return pdfBuffer;
+}
+
+// ================= EXPORT =================
+
+module.exports = {
+  generateInterviewReport,
+  generateResumePdf
+};
